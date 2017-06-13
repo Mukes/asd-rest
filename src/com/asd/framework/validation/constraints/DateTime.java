@@ -7,8 +7,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Length {
-  int max() default 100;
-
-  int min() default 1;
+public @interface DateTime {
+  String format() default "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 }

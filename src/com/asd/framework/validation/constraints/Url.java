@@ -7,8 +7,5 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Length {
-  int max() default 100;
-
-  int min() default 1;
+public @interface Url {
 }
