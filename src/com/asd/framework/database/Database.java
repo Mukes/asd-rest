@@ -7,22 +7,31 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.util.Properties;
 
-/**
- * Created by 985552 on 6/12/2017.
- */
 public class Database {
     private static Database INSTANCE = new Database();
-   private Properties properties=new Properties();
+    private Properties properties = new Properties();
     private InputStream input = null;
 
-    DbContext dbContext;
+    private DbContext dbContext;
+
     private Database() {
+        initDbContext();
+    }
+
+    public void initDbContext() {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            input=getClass().getClassLoader().getResourceAsStream("application.properties");
+            input = getClass().getClassLoader().getResourceAsStream("application.properties");
             properties.load(input);
-            dbContext=new DbContext(new MySqlStrategy(properties.getProperty("dburl"),properties.getProperty("dbusername"),
-                    properties.getProperty("password")));
+            String url = properties.getProperty("dburl");
+            String username = properties.getProperty("dbusername");
+            String password = properties.getProperty("password");
+            if ("mysql".equalsIgnoreCase(properties.getProperty("db"))) {
+                Class.forName("com.mysql.jdbc.Driver");
+                dbContext = new DbContext(new MySqlStrategy(url, username, password));
+            } else if ("mssql".equalsIgnoreCase(properties.getProperty("db"))) {
+                Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                dbContext = new DbContext(new MsSqlStrategy(url, username, password));
+            }
             //dbContext.executeStrategy();
             System.out.println(properties.getProperty("dbusername"));
         } catch (ClassNotFoundException e) {
@@ -32,8 +41,7 @@ public class Database {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             if (input != null) {
                 try {
                     input.close();
@@ -44,10 +52,10 @@ public class Database {
         }
     }
 
-
-    public Connection getConnection(){
+    public Connection getConnection() {
         return dbContext.executeStrategy();
     }
+
     public static Database getINSTANCE() {
         return INSTANCE;
     }

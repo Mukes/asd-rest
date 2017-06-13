@@ -11,7 +11,8 @@ public class DbContext {
     public DbContext(DbStrategy dbStrategy) {
         this.dbStrategy = dbStrategy;
     }
-    public Connection executeStrategy(){
+
+    public Connection executeStrategy() {
         System.out.println("----Db connection started----");
         return dbStrategy.dbConnect();
     }
