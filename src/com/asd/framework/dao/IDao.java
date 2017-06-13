@@ -1,7 +1,15 @@
 package com.asd.framework.dao;
 
-/**
- * Created by 985552 on 6/12/2017.
- */
-public interface IDao {
+import java.util.List;
+
+public interface IDao<T> {
+    Long insert(String tableName, String columnNames, String values);
+
+    Long update(String tableName, String statement, Long id);
+
+    void delete(String tableName, Long id);
+
+    T get(String tableName, String relation, String condition, Class clazz);
+
+    List<T> getAll(String tableName, String relation, String condition, String pagination, Class clazz);
 }
