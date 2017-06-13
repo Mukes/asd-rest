@@ -12,7 +12,7 @@ import java.util.Properties;
  * Created by Zamuna on 6/12/2017.
  */
 public class MySqlStrategy implements DbStrategy {
-    Connection connection;
+    private Connection connection;
 
     private String dburl = "";
     private String username = "";
@@ -25,6 +25,7 @@ public class MySqlStrategy implements DbStrategy {
     }
 
     public Connection dbConnect() {
+
         if (connection==null){
             try {
                 connection = DriverManager.getConnection(dburl,username, password);

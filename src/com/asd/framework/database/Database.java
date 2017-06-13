@@ -4,6 +4,7 @@ package com.asd.framework.database;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Connection;
 import java.util.Properties;
 
 /**
@@ -13,14 +14,16 @@ public class Database {
     private static Database INSTANCE = new Database();
    private Properties properties=new Properties();
     private InputStream input = null;
+
+    DbContext dbContext;
     private Database() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             input=getClass().getClassLoader().getResourceAsStream("application.properties");
             properties.load(input);
-            DbContext dbContext=new DbContext(new MySqlStrategy(properties.getProperty("dburl"),properties.getProperty("dbusername"),
+            dbContext=new DbContext(new MySqlStrategy(properties.getProperty("dburl"),properties.getProperty("dbusername"),
                     properties.getProperty("password")));
-            dbContext.executeStrategy();
+            //dbContext.executeStrategy();
             System.out.println(properties.getProperty("dbusername"));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -42,6 +45,9 @@ public class Database {
     }
 
 
+    public Connection getConnection(){
+        return dbContext.executeStrategy();
+    }
     public static Database getINSTANCE() {
         return INSTANCE;
     }
