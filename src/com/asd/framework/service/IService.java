@@ -12,9 +12,10 @@ public interface IService<T> {
 
   public Integer update(T t, Long id, boolean validate);
 
-  public List<T> getAll(String search, List<String> searchFields, String offset, String limit, Class clazz);
+  public List<T> getAll(String search, List<String> searchFields, String offset, String limit);
 
-  public T getbyid(Long id, Class clazz);
+  public T getbyid(Long id);
 
-  public void delete(Long id, Class clazz);
+  public Long delete(Long id);
+
 }

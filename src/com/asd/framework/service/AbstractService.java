@@ -1,6 +1,7 @@
 package com.asd.framework.service;
 
 import com.asd.framework.dao.AbstractDao;
+import com.asd.framework.database.Datasource;
 import com.asd.framework.error.ErrorMessage;
 import com.asd.framework.model.AbstractMetaData;
 import com.asd.framework.validation.FacadeValidator;
@@ -8,6 +9,7 @@ import com.asd.framework.validation.FacadeValidator;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
+import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -18,15 +20,29 @@ public class AbstractService<T> extends FacadeValidator<T> implements IService<T
     private StringBuilder values;
     private Map<String, String> columnToValueMap;
     private Map<String, Object> valueMap;
-    AbstractDao<T> dao;
+    private AbstractDao<T> dao;
 
-    public AbstractService(AbstractDao<T> dao) {
-        this.dao = dao;
+    private final Class<T> clazz;
+
+    public AbstractService(Class<T> clazz) {
+        this.clazz = clazz;
+        template();
+    }
+
+    private final void template(){
+        //Algorithm Steps
+        initDao();
+        initStringBuilder();
+    }
+
+    private void initDao(){
+        this.dao = new AbstractDao<>();
+    }
+    private void initStringBuilder(){
         columns = new StringBuilder();
         values = new StringBuilder();
         statement = new StringBuilder();
     }
-
     @Override
     public Long insert(T t) {
         //Send response from here if not valid
@@ -49,7 +65,7 @@ public class AbstractService<T> extends FacadeValidator<T> implements IService<T
 
     @Override
     public Integer update(T t, Long id, boolean validate) {
-        boolean isValid = false;
+        boolean isValid = true;
         if (validate){
             Map<Boolean, List<ErrorMessage>> map = validate(t);
             isValid = getFirstKey(map);
@@ -77,7 +93,7 @@ public class AbstractService<T> extends FacadeValidator<T> implements IService<T
     }
 
     @Override
-    public List<T> getAll(String searchText, List<String> searchFields, String offset, String limit, Class clazz) {
+    public List<T> getAll(String searchText, List<String> searchFields, String offset, String limit) {
         return getAll(searchText, searchFields, offset, limit, clazz, false);
     }
 
@@ -97,15 +113,15 @@ public class AbstractService<T> extends FacadeValidator<T> implements IService<T
     }
 
     @Override
-    public T getbyid(Long id, Class clazz) {
+    public T getbyid(Long id) {
         System.out.println("inside get by id");
         T t = dao.get(getTableName(clazz), getRelation(classToDbFieldMap(clazz)), " id = " + id, clazz);
         return t;
     }
 
     @Override
-    public void delete(Long id, Class clazz) {
-        dao.delete(getTableName(clazz), id);
+    public Long delete(Long id) {
+        return dao.delete(getTableName(clazz), id);
     }
 
     public String getTableName(Class t) {

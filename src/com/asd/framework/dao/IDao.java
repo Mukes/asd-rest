@@ -7,7 +7,7 @@ public interface IDao<T> {
 
     Long update(String tableName, String statement, Long id);
 
-    void delete(String tableName, Long id);
+    Long delete(String tableName, Long id);
 
     T get(String tableName, String relation, String condition, Class clazz);
 

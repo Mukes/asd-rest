@@ -7,14 +7,14 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.util.Properties;
 
-public class Database {
-    private static Database INSTANCE = new Database();
+public class Datasource {
+    private static Datasource INSTANCE = new Datasource();
     private Properties properties = new Properties();
     private InputStream input = null;
 
     private DbContext dbContext;
 
-    private Database() {
+    private Datasource() {
         initDbContext();
     }
 
@@ -56,7 +56,7 @@ public class Database {
         return dbContext.executeStrategy();
     }
 
-    public static Database getINSTANCE() {
+    public static Datasource getINSTANCE() {
         return INSTANCE;
     }
 
